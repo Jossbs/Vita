@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VitaCare | Gestión de pacientes</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="VitaCare">
+        <img class="brand-logo" src="/assets/logo.svg" alt="" aria-hidden="true" onerror="this.hidden = true">
+        <span class="brand-name">VitaCare</span>
+      </a>
+
+      <div class="topbar-actions">
+        <span class="system-status" id="systemStatus">
+          <span class="status-dot" aria-hidden="true"></span>
+          Verificando servicio
+        </span>
+        <a class="text-link" href="/swagger" target="_blank" rel="noreferrer">Swagger</a>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="patient-list-panel" aria-label="Pacientes">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Pacientes</p>
+            <h1>Gestión de cuidado</h1>
+          </div>
+          <button class="icon-command" id="refreshButton" type="button" aria-label="Actualizar pacientes" title="Actualizar pacientes">
+            ↻
+          </button>
+        </div>
+
+        <div class="list-tools">
+          <label class="search-field">
+            <span>Buscar paciente</span>
+            <input id="searchInput" type="search" placeholder="Nombre, condición o contacto">
+          </label>
+          <button class="primary-command" id="newPatientButton" type="button">+ Nuevo paciente</button>
+        </div>
+
+        <div class="patient-list" id="patientList" aria-live="polite"></div>
+      </aside>
+
+      <section class="detail-panel" aria-label="Detalle del paciente">
+        <div class="detail-header">
+          <div>
+            <p class="eyebrow" id="formModeLabel">Nuevo registro</p>
+            <h2 id="formTitle">Datos del paciente</h2>
+          </div>
+          <button class="danger-command" id="deleteButton" type="button" hidden>Eliminar</button>
+        </div>
+
+        <div class="alert" id="messageArea" role="status" aria-live="polite" hidden></div>
+
+        <form id="patientForm" class="patient-form" novalidate>
+          <input type="hidden" id="patientId" name="patientId">
+
+          <section class="form-section">
+            <div class="section-heading">
+              <h3>Identificación</h3>
+              <p>Datos principales para reconocer a la persona atendida.</p>
+            </div>
+            <div class="form-grid">
+              <label>
+                <span>Nombre completo</span>
+                <input name="fullName" autocomplete="name" required maxlength="200">
+              </label>
+              <label>
+                <span>Nombre preferido</span>
+                <input name="preferredName" maxlength="100">
+              </label>
+              <label>
+                <span>Fecha de nacimiento</span>
+                <input name="birthDate" type="date" required>
+              </label>
+              <label>
+                <span>Tipo de sangre</span>
+                <input name="bloodType" maxlength="5" placeholder="O+">
+              </label>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="section-heading">
+              <h3>Necesidades de cuidado</h3>
+              <p>Nivel de atención y apoyos cotidianos.</p>
+            </div>
+            <div class="form-grid">
+              <label>
+                <span>Nivel de cuidado</span>
+                <select name="careLevel">
+                  <option value="Basic">Básico</option>
+                  <option value="Moderate">Moderado</option>
+                  <option value="High">Alto</option>
+                  <option value="Intensive">Intensivo</option>
+                </select>
+              </label>
+              <label>
+                <span>Movilidad</span>
+                <select name="mobilityStatus">
+                  <option value="Independent">Independiente</option>
+                  <option value="NeedsAssistance">Requiere asistencia</option>
+                  <option value="UsesWheelchair">Usa silla de ruedas</option>
+                  <option value="BedBound">Permanece en cama</option>
+                </select>
+              </label>
+              <label>
+                <span>Condición principal</span>
+                <input name="primaryCondition" maxlength="200">
+              </label>
+              <fieldset class="toggle-group">
+                <legend>Apoyos requeridos</legend>
+                <label><input name="requiresContinuousSupervision" type="checkbox"> Supervisión continua</label>
+                <label><input name="requiresMedicationAssistance" type="checkbox"> Ayuda con medicamentos</label>
+                <label><input name="requiresFeedingAssistance" type="checkbox"> Ayuda con alimentación</label>
+              </fieldset>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="section-heading">
+              <h3>Información clínica</h3>
+              <p>Notas útiles para seguimiento y seguridad.</p>
+            </div>
+            <div class="form-grid textareas">
+              <label>
+                <span>Alergias</span>
+                <textarea name="allergies" maxlength="1000"></textarea>
+              </label>
+              <label>
+                <span>Medicamentos actuales</span>
+                <textarea name="currentMedications" maxlength="1000"></textarea>
+              </label>
+              <label>
+                <span>Instrucciones de cuidado</span>
+                <textarea name="careInstructions" maxlength="2000"></textarea>
+              </label>
+              <label>
+                <span>Notas médicas</span>
+                <textarea name="medicalNotes" maxlength="2000"></textarea>
+              </label>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="section-heading">
+              <h3>Contacto de emergencia</h3>
+              <p>Persona a contactar ante un cambio importante.</p>
+            </div>
+            <div class="form-grid">
+              <label>
+                <span>Nombre</span>
+                <input name="emergencyContactName" maxlength="200">
+              </label>
+              <label>
+                <span>Teléfono</span>
+                <input name="emergencyContactPhone" maxlength="50" inputmode="tel">
+              </label>
+              <label>
+                <span>Relación</span>
+                <input name="emergencyContactRelationship" maxlength="100">
+              </label>
+            </div>
+          </section>
+
+          <div class="form-actions">
+            <button class="secondary-command" id="clearButton" type="button">Limpiar</button>
+            <button class="primary-command" type="submit">Guardar paciente</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
