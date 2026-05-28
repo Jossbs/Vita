@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using VitaCare.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +8,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddInfrastructure(connectionString, typeof(Program).Assembly.GetName().Name);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(allowIntegerValues: false));
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();

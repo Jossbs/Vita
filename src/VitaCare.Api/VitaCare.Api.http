@@ -1,6 +1,36 @@
 @VitaCare.Api_HostAddress = http://localhost:5219
 
-GET {{VitaCare.Api_HostAddress}}/weatherforecast/
+GET {{VitaCare.Api_HostAddress}}/health
 Accept: application/json
+
+###
+
+GET {{VitaCare.Api_HostAddress}}/api/patients
+Accept: application/json
+
+###
+
+POST {{VitaCare.Api_HostAddress}}/api/patients
+Content-Type: application/json
+
+{
+  "fullName": "Maria Lopez",
+  "preferredName": "Maria",
+  "birthDate": "1948-03-12",
+  "bloodType": "O+",
+  "careLevel": "Moderate",
+  "mobilityStatus": "NeedsAssistance",
+  "requiresContinuousSupervision": false,
+  "requiresMedicationAssistance": true,
+  "requiresFeedingAssistance": false,
+  "primaryCondition": "Diabetes type 2",
+  "allergies": "Penicillin",
+  "currentMedications": "Metformin",
+  "careInstructions": "Monitor glucose before breakfast.",
+  "emergencyContactName": "Ana Lopez",
+  "emergencyContactPhone": "+52 555 010 1000",
+  "emergencyContactRelationship": "Daughter",
+  "medicalNotes": "Requires weekly follow-up."
+}
 
 ###
