@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>VitaCare | Gestión de pacientes</title>
+  <title>VITA | Sistema Integral de Cuidados</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <a class="brand" href="/" aria-label="VitaCare">
+      <a class="brand" href="/" aria-label="VITA Sistema Integral de Cuidados">
         <img class="brand-logo" src="/assets/logo.svg" alt="" aria-hidden="true" onerror="this.hidden = true">
-        <span class="brand-name">VitaCare</span>
+        <span class="brand-copy">
+          <span class="brand-name">VITA</span>
+          <span class="brand-subtitle">Sistema Integral de Cuidados</span>
+        </span>
       </a>
 
       <div class="topbar-actions">
@@ -28,11 +31,26 @@
         <div class="panel-header">
           <div>
             <p class="eyebrow">Pacientes</p>
-            <h1>Gestión de cuidado</h1>
+            <h1>Panel de seguimiento</h1>
           </div>
           <button class="icon-command" id="refreshButton" type="button" aria-label="Actualizar pacientes" title="Actualizar pacientes">
             ↻
           </button>
+        </div>
+
+        <div class="panel-summary" aria-label="Resumen de pacientes">
+          <div class="summary-item">
+            <strong id="totalPatients">0</strong>
+            <span>Pacientes</span>
+          </div>
+          <div class="summary-item">
+            <strong id="highCarePatients">0</strong>
+            <span>Cuidado alto</span>
+          </div>
+          <div class="summary-item">
+            <strong id="supervisionPatients">0</strong>
+            <span>Supervisión</span>
+          </div>
         </div>
 
         <div class="list-tools">

@@ -32,7 +32,10 @@ const elements = {
   delete: document.querySelector("#deleteButton"),
   message: document.querySelector("#messageArea"),
   formMode: document.querySelector("#formModeLabel"),
-  formTitle: document.querySelector("#formTitle")
+  formTitle: document.querySelector("#formTitle"),
+  totalPatients: document.querySelector("#totalPatients"),
+  highCarePatients: document.querySelector("#highCarePatients"),
+  supervisionPatients: document.querySelector("#supervisionPatients")
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -74,6 +77,7 @@ async function loadPatients() {
     }
 
     state.patients = await response.json();
+    renderSummary();
     renderPatientList();
     hideMessage();
   } catch (error) {
@@ -110,6 +114,17 @@ function renderPatientList() {
   }
 }
 
+function renderSummary() {
+  const highCarePatients = state.patients.filter(patient =>
+    patient.careLevel === "High" || patient.careLevel === "Intensive").length;
+  const supervisionPatients = state.patients.filter(patient =>
+    patient.requiresContinuousSupervision).length;
+
+  elements.totalPatients.textContent = state.patients.length;
+  elements.highCarePatients.textContent = highCarePatients;
+  elements.supervisionPatients.textContent = supervisionPatients;
+}
+
 function createPatientRow(patient) {
   const row = document.createElement("button");
   row.type = "button";
@@ -138,6 +153,9 @@ function createPatientRow(patient) {
 
   const badge = document.createElement("span");
   badge.className = "care-badge";
+  if (patient.careLevel === "High" || patient.careLevel === "Intensive") {
+    badge.classList.add(patient.careLevel === "High" ? "is-high" : "is-intensive");
+  }
   badge.textContent = careLabels[patient.careLevel] || patient.careLevel;
 
   row.append(summary, badge);
