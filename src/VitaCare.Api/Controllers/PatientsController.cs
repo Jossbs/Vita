@@ -71,7 +71,7 @@ namespace VitaCare.Api.Controllers
         {
             if (!IsBirthDateValid(request))
             {
-                return ValidationProblem(ModelState);
+                return InvalidRequest();
             }
 
             var patient = new Patient();
@@ -90,7 +90,7 @@ namespace VitaCare.Api.Controllers
         {
             if (!IsBirthDateValid(request))
             {
-                return ValidationProblem(ModelState);
+                return InvalidRequest();
             }
 
             var patient = await _dbContext.Patients.FindAsync(id);
@@ -147,6 +147,16 @@ namespace VitaCare.Api.Controllers
                 Status = StatusCodes.Status404NotFound,
                 Title = "Paciente no encontrado.",
                 Detail = "No existe un paciente con el identificador indicado."
+            });
+        }
+
+        private BadRequestObjectResult InvalidRequest()
+        {
+            return BadRequest(new ValidationProblemDetails(ModelState)
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "La solicitud no es válida.",
+                Detail = "Revisa los campos enviados e intenta nuevamente."
             });
         }
 
