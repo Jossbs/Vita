@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using VitaCare.Core.Entities;
-using VitaCare.Core.Enums;
 
 namespace VitaCare.Infrastructure.Persistence
 {
@@ -36,13 +35,11 @@ namespace VitaCare.Infrastructure.Persistence
 
                 entity.Property(p => p.CareLevel)
                     .HasConversion<string>()
-                    .HasMaxLength(50)
-                    .HasDefaultValue(CareLevel.Basic);
+                    .HasMaxLength(50);
 
                 entity.Property(p => p.MobilityStatus)
                     .HasConversion<string>()
-                    .HasMaxLength(50)
-                    .HasDefaultValue(MobilityStatus.Independent);
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<User>(entity =>

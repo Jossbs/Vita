@@ -5,17 +5,17 @@ namespace VitaCare.Api.Contracts.Patients
 {
     public class PatientRequest
     {
-        [Required]
-        [StringLength(200, MinimumLength = 2)]
+        [Required(ErrorMessage = "El nombre completo es obligatorio.")]
+        [StringLength(200, MinimumLength = 2, ErrorMessage = "El nombre completo debe tener entre 2 y 200 caracteres.")]
         public string? FullName { get; set; }
 
-        [StringLength(100)]
+        [StringLength(100, ErrorMessage = "El nombre preferido no puede superar los 100 caracteres.")]
         public string? PreferredName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "La fecha de nacimiento es obligatoria.")]
         public DateTime? BirthDate { get; set; }
 
-        [StringLength(5)]
+        [StringLength(5, ErrorMessage = "El tipo de sangre no puede superar los 5 caracteres.")]
         public string? BloodType { get; set; }
 
         public CareLevel CareLevel { get; set; } = CareLevel.Basic;
@@ -28,28 +28,28 @@ namespace VitaCare.Api.Contracts.Patients
 
         public bool RequiresFeedingAssistance { get; set; }
 
-        [StringLength(200)]
+        [StringLength(200, ErrorMessage = "La condición principal no puede superar los 200 caracteres.")]
         public string? PrimaryCondition { get; set; }
 
-        [StringLength(1000)]
+        [StringLength(1000, ErrorMessage = "Las alergias no pueden superar los 1000 caracteres.")]
         public string? Allergies { get; set; }
 
-        [StringLength(1000)]
+        [StringLength(1000, ErrorMessage = "Los medicamentos actuales no pueden superar los 1000 caracteres.")]
         public string? CurrentMedications { get; set; }
 
-        [StringLength(2000)]
+        [StringLength(2000, ErrorMessage = "Las instrucciones de cuidado no pueden superar los 2000 caracteres.")]
         public string? CareInstructions { get; set; }
 
-        [StringLength(200)]
+        [StringLength(200, ErrorMessage = "El nombre del contacto de emergencia no puede superar los 200 caracteres.")]
         public string? EmergencyContactName { get; set; }
 
-        [StringLength(50)]
+        [StringLength(50, ErrorMessage = "El teléfono del contacto de emergencia no puede superar los 50 caracteres.")]
         public string? EmergencyContactPhone { get; set; }
 
-        [StringLength(100)]
+        [StringLength(100, ErrorMessage = "La relación del contacto de emergencia no puede superar los 100 caracteres.")]
         public string? EmergencyContactRelationship { get; set; }
 
-        [StringLength(2000)]
+        [StringLength(2000, ErrorMessage = "Las notas médicas no pueden superar los 2000 caracteres.")]
         public string? MedicalNotes { get; set; }
     }
 }

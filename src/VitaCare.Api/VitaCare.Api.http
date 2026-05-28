@@ -14,8 +14,8 @@ POST {{VitaCare.Api_HostAddress}}/api/patients
 Content-Type: application/json
 
 {
-  "fullName": "Maria Lopez",
-  "preferredName": "Maria",
+  "fullName": "María López",
+  "preferredName": "María",
   "birthDate": "1948-03-12",
   "bloodType": "O+",
   "careLevel": "Moderate",
@@ -23,14 +23,14 @@ Content-Type: application/json
   "requiresContinuousSupervision": false,
   "requiresMedicationAssistance": true,
   "requiresFeedingAssistance": false,
-  "primaryCondition": "Diabetes type 2",
-  "allergies": "Penicillin",
+  "primaryCondition": "Diabetes tipo 2",
+  "allergies": "Penicilina",
   "currentMedications": "Metformin",
-  "careInstructions": "Monitor glucose before breakfast.",
+  "careInstructions": "Controlar glucosa antes del desayuno.",
   "emergencyContactName": "Ana Lopez",
   "emergencyContactPhone": "+52 555 010 1000",
-  "emergencyContactRelationship": "Daughter",
-  "medicalNotes": "Requires weekly follow-up."
+  "emergencyContactRelationship": "Hija",
+  "medicalNotes": "Requiere seguimiento semanal."
 }
 
 ###

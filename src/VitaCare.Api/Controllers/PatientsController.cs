@@ -60,7 +60,7 @@ namespace VitaCare.Api.Controllers
 
             if (patient is null)
             {
-                return NotFound();
+                return PatientNotFound();
             }
 
             return Ok(ToResponse(patient));
@@ -97,7 +97,7 @@ namespace VitaCare.Api.Controllers
 
             if (patient is null)
             {
-                return NotFound();
+                return PatientNotFound();
             }
 
             ApplyRequest(patient, request);
@@ -115,7 +115,7 @@ namespace VitaCare.Api.Controllers
 
             if (patient is null)
             {
-                return NotFound();
+                return PatientNotFound();
             }
 
             _dbContext.Patients.Remove(patient);
@@ -136,8 +136,18 @@ namespace VitaCare.Api.Controllers
                 return true;
             }
 
-            ModelState.AddModelError(nameof(request.BirthDate), "Birth date cannot be in the future.");
+            ModelState.AddModelError(nameof(request.BirthDate), "La fecha de nacimiento no puede estar en el futuro.");
             return false;
+        }
+
+        private NotFoundObjectResult PatientNotFound()
+        {
+            return NotFound(new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Paciente no encontrado.",
+                Detail = "No existe un paciente con el identificador indicado."
+            });
         }
 
         private static void ApplyRequest(Patient patient, PatientRequest request)
