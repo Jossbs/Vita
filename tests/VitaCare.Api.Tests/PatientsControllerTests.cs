@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VitaCare.Api.Contracts.Patients;
 using VitaCare.Api.Controllers;
+using VitaCare.Api.Services.Patients;
 using VitaCare.Core.Entities;
 using VitaCare.Core.Enums;
 using VitaCare.Infrastructure.Persistence;
@@ -16,7 +17,7 @@ public class PatientsControllerTests
     public async Task Create_WithValidRequest_ReturnsCreatedPatientAndPersistsNormalizedValues()
     {
         await using var dbContext = CreateDbContext();
-        var controller = new PatientsController(dbContext);
+        var controller = CreateController(dbContext);
         var request = CreateValidRequest();
         request.FullName = "  María López  ";
         request.EmergencyContactName = "  Ana López  ";
@@ -42,7 +43,7 @@ public class PatientsControllerTests
     public async Task Create_WithFutureBirthDate_ReturnsSpanishValidationProblemAndDoesNotPersist()
     {
         await using var dbContext = CreateDbContext();
-        var controller = new PatientsController(dbContext);
+        var controller = CreateController(dbContext);
         var request = CreateValidRequest();
         request.BirthDate = DateTime.UtcNow.Date.AddDays(1);
 
@@ -61,7 +62,7 @@ public class PatientsControllerTests
     public async Task GetById_WhenPatientDoesNotExist_ReturnsSpanishProblemDetails()
     {
         await using var dbContext = CreateDbContext();
-        var controller = new PatientsController(dbContext);
+        var controller = CreateController(dbContext);
 
         var result = await controller.GetById(Guid.NewGuid());
 
@@ -86,7 +87,7 @@ public class PatientsControllerTests
         dbContext.Patients.Add(patient);
         await dbContext.SaveChangesAsync();
 
-        var controller = new PatientsController(dbContext);
+        var controller = CreateController(dbContext);
         var request = CreateValidRequest();
         request.FullName = "Nombre actualizado";
         request.CareLevel = CareLevel.High;
@@ -118,7 +119,7 @@ public class PatientsControllerTests
         dbContext.Patients.Add(patient);
         await dbContext.SaveChangesAsync();
 
-        var controller = new PatientsController(dbContext);
+        var controller = CreateController(dbContext);
 
         var result = await controller.Delete(patient.Id);
 
@@ -148,6 +149,11 @@ public class PatientsControllerTests
             .Options;
 
         return new ApplicationDbContext(options);
+    }
+
+    private static PatientsController CreateController(ApplicationDbContext dbContext)
+    {
+        return new PatientsController(new PatientService(dbContext));
     }
 
     private static PatientRequest CreateValidRequest()

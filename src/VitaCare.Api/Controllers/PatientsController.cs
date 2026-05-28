@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using VitaCare.Api.Contracts.Patients;
-using VitaCare.Core.Entities;
-using VitaCare.Infrastructure.Persistence;
+using VitaCare.Api.Services.Patients;
 
 namespace VitaCare.Api.Controllers
 {
@@ -10,116 +8,80 @@ namespace VitaCare.Api.Controllers
     [Route("api/[controller]")]
     public class PatientsController : ControllerBase
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IPatientService _patientService;
 
-        public PatientsController(ApplicationDbContext dbContext)
+        public PatientsController(IPatientService patientService)
         {
-            _dbContext = dbContext;
+            _patientService = patientService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<PatientResponse>>> GetAll()
+        public async Task<ActionResult<IReadOnlyList<PatientResponse>>> GetAll(
+            CancellationToken cancellationToken = default)
         {
-            var patients = await _dbContext.Patients
-                .AsNoTracking()
-                .OrderBy(patient => patient.FullName)
-                .Select(patient => new PatientResponse
-                {
-                    Id = patient.Id,
-                    FullName = patient.FullName,
-                    PreferredName = patient.PreferredName,
-                    BirthDate = patient.BirthDate,
-                    BloodType = patient.BloodType,
-                    CareLevel = patient.CareLevel,
-                    MobilityStatus = patient.MobilityStatus,
-                    RequiresContinuousSupervision = patient.RequiresContinuousSupervision,
-                    RequiresMedicationAssistance = patient.RequiresMedicationAssistance,
-                    RequiresFeedingAssistance = patient.RequiresFeedingAssistance,
-                    PrimaryCondition = patient.PrimaryCondition,
-                    Allergies = patient.Allergies,
-                    CurrentMedications = patient.CurrentMedications,
-                    CareInstructions = patient.CareInstructions,
-                    EmergencyContactName = patient.EmergencyContactName,
-                    EmergencyContactPhone = patient.EmergencyContactPhone,
-                    EmergencyContactRelationship = patient.EmergencyContactRelationship,
-                    MedicalNotes = patient.MedicalNotes,
-                    CreatedAt = patient.CreatedAt,
-                    UpdatedAt = patient.UpdatedAt
-                })
-                .ToListAsync();
-
-            return Ok(patients);
+            return Ok(await _patientService.GetAllAsync(cancellationToken));
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<PatientResponse>> GetById(Guid id)
+        public async Task<ActionResult<PatientResponse>> GetById(
+            Guid id,
+            CancellationToken cancellationToken = default)
         {
-            var patient = await _dbContext.Patients
-                .AsNoTracking()
-                .FirstOrDefaultAsync(patient => patient.Id == id);
+            var patient = await _patientService.GetByIdAsync(id, cancellationToken);
 
             if (patient is null)
             {
                 return PatientNotFound();
             }
 
-            return Ok(ToResponse(patient));
+            return Ok(patient);
         }
 
         [HttpPost]
-        public async Task<ActionResult<PatientResponse>> Create(PatientRequest request)
+        public async Task<ActionResult<PatientResponse>> Create(
+            PatientRequest request,
+            CancellationToken cancellationToken = default)
         {
             if (!IsBirthDateValid(request))
             {
                 return InvalidRequest();
             }
 
-            var patient = new Patient();
-            ApplyRequest(patient, request);
+            var response = await _patientService.CreateAsync(request, cancellationToken);
 
-            _dbContext.Patients.Add(patient);
-            await _dbContext.SaveChangesAsync();
-
-            var response = ToResponse(patient);
-
-            return CreatedAtAction(nameof(GetById), new { id = patient.Id }, response);
+            return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult<PatientResponse>> Update(Guid id, PatientRequest request)
+        public async Task<ActionResult<PatientResponse>> Update(
+            Guid id,
+            PatientRequest request,
+            CancellationToken cancellationToken = default)
         {
             if (!IsBirthDateValid(request))
             {
                 return InvalidRequest();
             }
 
-            var patient = await _dbContext.Patients.FindAsync(id);
+            var patient = await _patientService.UpdateAsync(id, request, cancellationToken);
 
             if (patient is null)
             {
                 return PatientNotFound();
             }
 
-            ApplyRequest(patient, request);
-            patient.UpdatedAt = DateTime.UtcNow;
-
-            await _dbContext.SaveChangesAsync();
-
-            return Ok(ToResponse(patient));
+            return Ok(patient);
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken = default)
         {
-            var patient = await _dbContext.Patients.FindAsync(id);
+            var wasDeleted = await _patientService.DeleteAsync(id, cancellationToken);
 
-            if (patient is null)
+            if (!wasDeleted)
             {
                 return PatientNotFound();
             }
-
-            _dbContext.Patients.Remove(patient);
-            await _dbContext.SaveChangesAsync();
 
             return NoContent();
         }
@@ -160,57 +122,5 @@ namespace VitaCare.Api.Controllers
             });
         }
 
-        private static void ApplyRequest(Patient patient, PatientRequest request)
-        {
-            patient.FullName = request.FullName!.Trim();
-            patient.PreferredName = Normalize(request.PreferredName);
-            patient.BirthDate = request.BirthDate!.Value;
-            patient.BloodType = Normalize(request.BloodType);
-            patient.CareLevel = request.CareLevel;
-            patient.MobilityStatus = request.MobilityStatus;
-            patient.RequiresContinuousSupervision = request.RequiresContinuousSupervision;
-            patient.RequiresMedicationAssistance = request.RequiresMedicationAssistance;
-            patient.RequiresFeedingAssistance = request.RequiresFeedingAssistance;
-            patient.PrimaryCondition = Normalize(request.PrimaryCondition);
-            patient.Allergies = Normalize(request.Allergies);
-            patient.CurrentMedications = Normalize(request.CurrentMedications);
-            patient.CareInstructions = Normalize(request.CareInstructions);
-            patient.EmergencyContactName = Normalize(request.EmergencyContactName);
-            patient.EmergencyContactPhone = Normalize(request.EmergencyContactPhone);
-            patient.EmergencyContactRelationship = Normalize(request.EmergencyContactRelationship);
-            patient.MedicalNotes = Normalize(request.MedicalNotes);
-        }
-
-        private static PatientResponse ToResponse(Patient patient)
-        {
-            return new PatientResponse
-            {
-                Id = patient.Id,
-                FullName = patient.FullName,
-                PreferredName = patient.PreferredName,
-                BirthDate = patient.BirthDate,
-                BloodType = patient.BloodType,
-                CareLevel = patient.CareLevel,
-                MobilityStatus = patient.MobilityStatus,
-                RequiresContinuousSupervision = patient.RequiresContinuousSupervision,
-                RequiresMedicationAssistance = patient.RequiresMedicationAssistance,
-                RequiresFeedingAssistance = patient.RequiresFeedingAssistance,
-                PrimaryCondition = patient.PrimaryCondition,
-                Allergies = patient.Allergies,
-                CurrentMedications = patient.CurrentMedications,
-                CareInstructions = patient.CareInstructions,
-                EmergencyContactName = patient.EmergencyContactName,
-                EmergencyContactPhone = patient.EmergencyContactPhone,
-                EmergencyContactRelationship = patient.EmergencyContactRelationship,
-                MedicalNotes = patient.MedicalNotes,
-                CreatedAt = patient.CreatedAt,
-                UpdatedAt = patient.UpdatedAt
-            };
-        }
-
-        private static string? Normalize(string? value)
-        {
-            return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-        }
     }
 }

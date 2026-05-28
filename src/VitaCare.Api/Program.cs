@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using VitaCare.Api.Services.Patients;
 using VitaCare.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
 
 builder.Services.AddInfrastructure(connectionString);
+builder.Services.AddScoped<IPatientService, PatientService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
