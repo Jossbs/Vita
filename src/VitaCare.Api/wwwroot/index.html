@@ -85,158 +85,165 @@
           <p class="form-progress-hint" id="progressHint">Empieza por lo esencial: ¿a quién vamos a cuidar?</p>
         </div>
 
-        <ol class="form-stepper" id="formStepper" aria-label="Pasos del formulario">
-          <li><button type="button" class="step is-active" data-step="0"><span class="step-index">1</span><span class="step-name">Identificación</span></button></li>
-          <li><button type="button" class="step" data-step="1"><span class="step-index">2</span><span class="step-name">Cuidado</span></button></li>
-          <li><button type="button" class="step" data-step="2"><span class="step-index">3</span><span class="step-name">Clínica</span></button></li>
-          <li><button type="button" class="step" data-step="3"><span class="step-index">4</span><span class="step-name">Contacto</span></button></li>
-          <li><button type="button" class="step" data-step="4"><span class="step-index">5</span><span class="step-name">Revisión</span></button></li>
-        </ol>
-
         <div class="alert" id="messageArea" role="status" aria-live="polite" hidden></div>
 
         <form id="patientForm" class="patient-form" novalidate>
           <input type="hidden" id="patientId" name="patientId">
 
-          <fieldset class="form-step is-active" data-step="0">
-            <div class="section-heading">
-              <h3>¿A quién cuidamos?</h3>
-              <p>Datos principales para reconocer y dirigirnos a la persona con respeto.</p>
-            </div>
-            <div class="form-grid">
-              <label class="is-required">
-                <span>Nombre completo</span>
-                <input name="fullName" autocomplete="name" required maxlength="200" placeholder="Ej. María López Fernández">
-                <small class="field-message" data-for="fullName"></small>
-              </label>
-              <label>
-                <span>Nombre preferido</span>
-                <input name="preferredName" maxlength="100" placeholder="Cómo le gusta que le llamen">
-                <small class="field-hint">Usar su nombre preferido crea cercanía y confianza.</small>
-              </label>
-              <label class="is-required">
-                <span>Fecha de nacimiento</span>
-                <input name="birthDate" type="date" required>
-                <small class="field-message" data-for="birthDate"></small>
-              </label>
-              <label>
-                <span>Tipo de sangre</span>
-                <select name="bloodType">
-                  <option value="">Desconocido</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                </select>
-                <small class="field-hint">Clave ante una transfusión de emergencia.</small>
-              </label>
-            </div>
-          </fieldset>
+          <p class="required-note">Los campos con <span class="req-mark" aria-hidden="true">*</span> son obligatorios.</p>
 
-          <fieldset class="form-step" data-step="1">
-            <div class="section-heading">
-              <h3>Necesidades de cuidado</h3>
-              <p>Define el nivel de atención y los apoyos del día a día.</p>
+          <details class="form-section" open>
+            <summary class="section-summary">
+              <span class="section-text">
+                <span class="section-title">Identificación</span>
+                <span class="section-desc">Datos para reconocer a la persona y dirigirnos con respeto.</span>
+              </span>
+              <span class="section-chevron" aria-hidden="true">⌄</span>
+            </summary>
+            <div class="section-body">
+              <div class="form-grid">
+                <label class="is-required">
+                  <span>Nombre</span>
+                  <input name="firstName" autocomplete="given-name" required maxlength="100" placeholder="Ej. María">
+                  <small class="field-message" data-for="firstName"></small>
+                </label>
+                <label class="is-required">
+                  <span>Apellidos</span>
+                  <input name="lastName" autocomplete="family-name" required maxlength="100" placeholder="Ej. López Fernández">
+                  <small class="field-message" data-for="lastName"></small>
+                </label>
+                <label>
+                  <span>Alias</span>
+                  <input name="preferredName" maxlength="100" placeholder="Cómo le gusta que le llamen">
+                  <small class="field-hint">Usar su alias crea cercanía y confianza.</small>
+                </label>
+                <label class="is-required">
+                  <span>Fecha de nacimiento</span>
+                  <input name="birthDate" type="date" required>
+                  <small class="field-message" data-for="birthDate"></small>
+                </label>
+                <label>
+                  <span>Tipo de sangre</span>
+                  <select name="bloodType">
+                    <option value="">Desconocido</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                  </select>
+                  <small class="field-hint">Clave ante una transfusión de emergencia.</small>
+                </label>
+              </div>
             </div>
-            <div class="form-grid">
-              <label>
-                <span>Nivel de cuidado</span>
-                <select name="careLevel">
-                  <option value="Basic">Básico</option>
-                  <option value="Moderate">Moderado</option>
-                  <option value="High">Alto</option>
-                  <option value="Intensive">Intensivo</option>
-                </select>
-                <small class="field-hint">Orienta la prioridad de seguimiento del equipo.</small>
-              </label>
-              <label>
-                <span>Movilidad</span>
-                <select name="mobilityStatus">
-                  <option value="Independent">Independiente</option>
-                  <option value="NeedsAssistance">Requiere asistencia</option>
-                  <option value="UsesWheelchair">Usa silla de ruedas</option>
-                  <option value="BedBound">Permanece en cama</option>
-                </select>
-              </label>
-              <label>
-                <span>Condición principal</span>
-                <input name="primaryCondition" maxlength="200" placeholder="Ej. Diabetes tipo 2">
-              </label>
-              <fieldset class="toggle-group">
-                <legend>Apoyos requeridos</legend>
-                <label><input name="requiresContinuousSupervision" type="checkbox"> Supervisión continua</label>
-                <label><input name="requiresMedicationAssistance" type="checkbox"> Ayuda con medicamentos</label>
-                <label><input name="requiresFeedingAssistance" type="checkbox"> Ayuda con alimentación</label>
-              </fieldset>
-            </div>
-          </fieldset>
+          </details>
 
-          <fieldset class="form-step" data-step="2">
-            <div class="section-heading">
-              <h3>Información clínica</h3>
-              <p>Notas que protegen a la persona y guían a quien la atiende.</p>
+          <details class="form-section">
+            <summary class="section-summary">
+              <span class="section-text">
+                <span class="section-title">Necesidades de cuidado</span>
+                <span class="section-desc">Nivel de atención y apoyos del día a día.</span>
+              </span>
+              <span class="section-chevron" aria-hidden="true">⌄</span>
+            </summary>
+            <div class="section-body">
+              <div class="form-grid">
+                <label>
+                  <span>Nivel de cuidado</span>
+                  <select name="careLevel">
+                    <option value="Basic">Básico</option>
+                    <option value="Moderate">Moderado</option>
+                    <option value="High">Alto</option>
+                    <option value="Intensive">Intensivo</option>
+                  </select>
+                  <small class="field-hint">Orienta la prioridad de seguimiento del equipo.</small>
+                </label>
+                <label>
+                  <span>Movilidad</span>
+                  <select name="mobilityStatus">
+                    <option value="Independent">Independiente</option>
+                    <option value="NeedsAssistance">Requiere asistencia</option>
+                    <option value="UsesWheelchair">Usa silla de ruedas</option>
+                    <option value="BedBound">Permanece en cama</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Condición principal</span>
+                  <input name="primaryCondition" maxlength="200" placeholder="Ej. Diabetes tipo 2">
+                </label>
+                <fieldset class="toggle-group">
+                  <legend>Apoyos requeridos</legend>
+                  <label><input name="requiresContinuousSupervision" type="checkbox"> Supervisión continua</label>
+                  <label><input name="requiresMedicationAssistance" type="checkbox"> Ayuda con medicamentos</label>
+                  <label><input name="requiresFeedingAssistance" type="checkbox"> Ayuda con alimentación</label>
+                </fieldset>
+              </div>
             </div>
-            <div class="form-grid textareas">
-              <label>
-                <span>Alergias</span>
-                <textarea name="allergies" maxlength="1000" placeholder="Medicamentos, alimentos o sustancias a evitar"></textarea>
-                <small class="field-hint">Anotar alergias previene reacciones graves.</small>
-              </label>
-              <label>
-                <span>Medicamentos actuales</span>
-                <textarea name="currentMedications" maxlength="1000" placeholder="Nombre, dosis y frecuencia"></textarea>
-              </label>
-              <label>
-                <span>Instrucciones de cuidado</span>
-                <textarea name="careInstructions" maxlength="2000" placeholder="Rutinas, preferencias y recomendaciones diarias"></textarea>
-              </label>
-              <label>
-                <span>Notas médicas</span>
-                <textarea name="medicalNotes" maxlength="2000" placeholder="Valoración integral y antecedentes relevantes"></textarea>
-              </label>
-            </div>
-          </fieldset>
+          </details>
 
-          <fieldset class="form-step" data-step="3">
-            <div class="section-heading">
-              <h3>Contacto de emergencia</h3>
-              <p>La persona a la que llamaremos ante un cambio importante.</p>
+          <details class="form-section">
+            <summary class="section-summary">
+              <span class="section-text">
+                <span class="section-title">Información clínica</span>
+                <span class="section-desc">Notas que protegen a la persona y guían a quien la atiende.</span>
+              </span>
+              <span class="section-chevron" aria-hidden="true">⌄</span>
+            </summary>
+            <div class="section-body">
+              <div class="form-grid textareas">
+                <label>
+                  <span>Alergias</span>
+                  <textarea name="allergies" maxlength="1000" placeholder="Medicamentos, alimentos o sustancias a evitar"></textarea>
+                  <small class="field-hint">Anotar alergias previene reacciones graves.</small>
+                </label>
+                <label>
+                  <span>Medicamentos actuales</span>
+                  <textarea name="currentMedications" maxlength="1000" placeholder="Nombre, dosis y frecuencia"></textarea>
+                </label>
+                <label>
+                  <span>Instrucciones de cuidado</span>
+                  <textarea name="careInstructions" maxlength="2000" placeholder="Rutinas, preferencias y recomendaciones diarias"></textarea>
+                </label>
+                <label>
+                  <span>Notas médicas</span>
+                  <textarea name="medicalNotes" maxlength="2000" placeholder="Valoración integral y antecedentes relevantes"></textarea>
+                </label>
+              </div>
             </div>
-            <div class="form-grid">
-              <label>
-                <span>Nombre</span>
-                <input name="emergencyContactName" maxlength="200" placeholder="Ej. Ana López">
-              </label>
-              <label>
-                <span>Teléfono</span>
-                <input name="emergencyContactPhone" maxlength="50" inputmode="tel" placeholder="Ej. +52 555 010 1000">
-              </label>
-              <label>
-                <span>Relación</span>
-                <input name="emergencyContactRelationship" maxlength="100" placeholder="Ej. Hija, cónyuge, cuidador">
-              </label>
-            </div>
-          </fieldset>
+          </details>
 
-          <fieldset class="form-step" data-step="4">
-            <div class="section-heading">
-              <h3>Revisión final</h3>
-              <p>Confirma que todo es correcto antes de guardar el perfil.</p>
+          <details class="form-section">
+            <summary class="section-summary">
+              <span class="section-text">
+                <span class="section-title">Contacto de emergencia</span>
+                <span class="section-desc">La persona a la que llamaremos ante un cambio importante.</span>
+              </span>
+              <span class="section-chevron" aria-hidden="true">⌄</span>
+            </summary>
+            <div class="section-body">
+              <div class="form-grid">
+                <label>
+                  <span>Nombre</span>
+                  <input name="emergencyContactName" maxlength="200" placeholder="Ej. Ana López">
+                </label>
+                <label>
+                  <span>Teléfono</span>
+                  <input name="emergencyContactPhone" maxlength="50" inputmode="tel" placeholder="Ej. +52 555 010 1000">
+                </label>
+                <label>
+                  <span>Relación</span>
+                  <input name="emergencyContactRelationship" maxlength="100" placeholder="Ej. Hija, cónyuge, cuidador">
+                </label>
+              </div>
             </div>
-            <div class="review-summary" id="reviewSummary" aria-live="polite"></div>
-          </fieldset>
+          </details>
 
           <div class="form-actions">
             <button class="secondary-command" id="clearButton" type="button">Limpiar</button>
-            <div class="form-nav">
-              <button class="secondary-command" id="prevStepButton" type="button" hidden>← Atrás</button>
-              <button class="primary-command" id="nextStepButton" type="button">Siguiente →</button>
-              <button class="primary-command" id="submitButton" type="submit" hidden>Guardar paciente</button>
-            </div>
+            <button class="primary-command" id="submitButton" type="submit">Guardar paciente</button>
           </div>
         </form>
       </section>

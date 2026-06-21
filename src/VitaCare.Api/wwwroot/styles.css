@@ -294,6 +294,11 @@ button {
   color: var(--danger);
 }
 
+.req-mark {
+  color: var(--danger);
+  font-weight: 850;
+}
+
 input,
 select,
 textarea {
@@ -305,10 +310,6 @@ textarea {
   color: var(--steel-grey);
   background: var(--clean-white);
   outline: none;
-}
-
-select {
-  color: var(--steel-grey);
 }
 
 textarea {
@@ -325,7 +326,8 @@ input:focus,
 select:focus,
 textarea:focus,
 button:focus-visible,
-a:focus-visible {
+a:focus-visible,
+summary:focus-visible {
   outline: 3px solid rgba(33, 150, 243, 0.28);
   outline-offset: 2px;
   border-color: var(--trust-blue);
@@ -342,7 +344,6 @@ a:focus-visible {
   font-size: 0.76rem;
   font-weight: 700;
   line-height: 1.35;
-  min-height: 0;
 }
 
 .field-message:empty {
@@ -494,8 +495,9 @@ label.has-error select {
 .form-progress {
   display: grid;
   gap: 8px;
-  padding: 18px 24px 4px;
+  padding: 18px 24px;
   background: var(--clean-white);
+  border-bottom: 1px solid var(--line);
 }
 
 .form-progress-meta {
@@ -544,103 +546,85 @@ label.has-error select {
   line-height: 1.4;
 }
 
-/* Stepper */
-.form-stepper {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
-  padding: 14px 24px 18px;
-  list-style: none;
-  background: var(--clean-white);
-  border-bottom: 1px solid var(--line);
-}
-
-.form-stepper li {
-  flex: 1 1 110px;
-}
-
-.form-stepper .step {
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 42px;
-  padding: 6px 10px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--clean-white);
-  color: var(--ink-soft);
-  font-size: 0.82rem;
-  font-weight: 800;
-  text-align: left;
-}
-
-.form-stepper .step-index {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  flex-shrink: 0;
-  border-radius: 999px;
-  background: var(--warm-sand);
-  color: var(--ink-soft);
-  font-size: 0.78rem;
-}
-
-.form-stepper .step.is-active {
-  border-color: var(--trust-blue);
-  background: var(--blue-soft);
-  color: #155c96;
-}
-
-.form-stepper .step.is-active .step-index {
-  background: var(--trust-blue);
-  color: var(--clean-white);
-}
-
-.form-stepper .step.is-complete {
-  border-color: rgba(0, 150, 136, 0.4);
-  color: #00665d;
-}
-
-.form-stepper .step.is-complete .step-index {
-  background: var(--healthcare-teal);
-  color: var(--clean-white);
-}
-
-/* Steps */
+/* Form + accordion sections */
 .patient-form {
   display: grid;
   gap: 0;
 }
 
-.form-step {
-  display: none;
-  grid-template-columns: minmax(180px, 255px) minmax(0, 1fr);
-  gap: 26px;
+.required-note {
   margin: 0;
-  padding: 24px;
-  border: 0;
+  padding: 14px 24px;
+  color: var(--ink-soft);
+  background: var(--clean-white);
+  border-bottom: 1px solid var(--line);
+  font-size: 0.84rem;
+}
+
+.required-note .req-mark {
+  font-weight: 850;
+}
+
+.form-section {
   background: var(--clean-white);
   border-bottom: 1px solid var(--line);
 }
 
-.form-step.is-active {
-  display: grid;
+.section-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
 }
 
-.section-heading h3 {
-  margin: 0 0 8px;
+.section-summary::-webkit-details-marker {
+  display: none;
+}
+
+.section-summary:hover {
+  background: var(--blue-soft);
+}
+
+.section-text {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.section-title {
   color: var(--steel-grey);
   font-size: 1rem;
+  font-weight: 850;
 }
 
-.section-heading p {
-  margin: 0;
+.section-desc {
   color: var(--ink-soft);
-  line-height: 1.45;
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.section-chevron {
+  flex-shrink: 0;
+  color: var(--healthcare-teal);
+  font-size: 1.4rem;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
+.form-section[open] .section-chevron {
+  transform: rotate(180deg);
+}
+
+.form-section[open] .section-summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.section-body {
+  padding: 22px 24px;
 }
 
 .form-grid {
@@ -648,10 +632,6 @@ label.has-error select {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   align-content: start;
-}
-
-.form-grid.textareas {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .toggle-group {
@@ -678,49 +658,6 @@ label.has-error select {
   accent-color: var(--healthcare-teal);
 }
 
-/* Review step */
-.review-summary {
-  display: grid;
-  gap: 0;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.review-item {
-  display: grid;
-  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
-  gap: 16px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--line);
-  background: var(--clean-white);
-}
-
-.review-item:last-child {
-  border-bottom: 0;
-}
-
-.review-item:nth-child(even) {
-  background: var(--warm-sand);
-}
-
-.review-term {
-  color: var(--ink-soft);
-  font-size: 0.82rem;
-  font-weight: 800;
-}
-
-.review-value {
-  color: var(--steel-grey);
-  line-height: 1.45;
-  word-break: break-word;
-}
-
-.review-value.is-empty {
-  color: #9aabb2;
-  font-style: italic;
-}
-
 .form-actions {
   position: sticky;
   bottom: 0;
@@ -734,13 +671,8 @@ label.has-error select {
   backdrop-filter: blur(14px);
 }
 
-.form-nav {
-  display: flex;
-  gap: 12px;
-}
-
 .form-actions button {
-  min-width: 130px;
+  min-width: 150px;
   padding: 0 18px;
 }
 
@@ -759,8 +691,9 @@ label.has-error select {
   .panel-header,
   .detail-header,
   .form-progress,
-  .form-stepper,
-  .form-step,
+  .required-note,
+  .section-summary,
+  .section-body,
   .form-actions {
     padding-left: 16px;
     padding-right: 16px;
@@ -781,34 +714,14 @@ label.has-error select {
     height: 40px;
   }
 
-  .form-stepper .step-name {
-    display: none;
-  }
-
-  .form-stepper li {
-    flex: 0 0 auto;
-  }
-
   .panel-summary,
-  .form-step,
-  .form-grid,
-  .form-grid.textareas {
+  .form-grid {
     grid-template-columns: 1fr;
-  }
-
-  .review-item {
-    grid-template-columns: 1fr;
-    gap: 4px;
   }
 
   .form-actions {
     flex-direction: column-reverse;
     align-items: stretch;
-  }
-
-  .form-nav {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
   }
 
   .form-actions button {
