@@ -18,11 +18,14 @@ namespace VitaCare.Api.Services.Patients
         {
             return await _dbContext.Patients
                 .AsNoTracking()
-                .OrderBy(patient => patient.FullName)
+                .OrderBy(patient => patient.LastName)
+                .ThenBy(patient => patient.FirstName)
                 .Select(patient => new PatientResponse
                 {
                     Id = patient.Id,
-                    FullName = patient.FullName,
+                    FirstName = patient.FirstName,
+                    LastName = patient.LastName,
+                    FullName = patient.FirstName + " " + patient.LastName,
                     PreferredName = patient.PreferredName,
                     BirthDate = patient.BirthDate,
                     BloodType = patient.BloodType,
@@ -102,7 +105,8 @@ namespace VitaCare.Api.Services.Patients
 
         private static void ApplyRequest(Patient patient, PatientRequest request)
         {
-            patient.FullName = request.FullName!.Trim();
+            patient.FirstName = request.FirstName!.Trim();
+            patient.LastName = request.LastName!.Trim();
             patient.PreferredName = Normalize(request.PreferredName);
             patient.BirthDate = request.BirthDate!.Value;
             patient.BloodType = Normalize(request.BloodType);
@@ -126,7 +130,9 @@ namespace VitaCare.Api.Services.Patients
             return new PatientResponse
             {
                 Id = patient.Id,
-                FullName = patient.FullName,
+                FirstName = patient.FirstName,
+                LastName = patient.LastName,
+                FullName = $"{patient.FirstName} {patient.LastName}",
                 PreferredName = patient.PreferredName,
                 BirthDate = patient.BirthDate,
                 BloodType = patient.BloodType,

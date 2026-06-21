@@ -5,11 +5,15 @@ namespace VitaCare.Api.Contracts.Patients
 {
     public class PatientRequest
     {
-        [Required(ErrorMessage = "El nombre completo es obligatorio.")]
-        [StringLength(200, MinimumLength = 2, ErrorMessage = "El nombre completo debe tener entre 2 y 200 caracteres.")]
-        public string? FullName { get; set; }
+        [Required(ErrorMessage = "El nombre es obligatorio.")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "El nombre debe tener entre 2 y 100 caracteres.")]
+        public string? FirstName { get; set; }
 
-        [StringLength(100, ErrorMessage = "El nombre preferido no puede superar los 100 caracteres.")]
+        [Required(ErrorMessage = "Los apellidos son obligatorios.")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Los apellidos deben tener entre 2 y 100 caracteres.")]
+        public string? LastName { get; set; }
+
+        [StringLength(100, ErrorMessage = "El alias no puede superar los 100 caracteres.")]
         public string? PreferredName { get; set; }
 
         [Required(ErrorMessage = "La fecha de nacimiento es obligatoria.")]

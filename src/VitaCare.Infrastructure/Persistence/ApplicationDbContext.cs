@@ -21,8 +21,13 @@ namespace VitaCare.Infrastructure.Persistence
             // Strict Typing and Constraints
             modelBuilder.Entity<Patient>(entity =>
             {
-                entity.Property(p => p.FullName).IsRequired().HasMaxLength(200);
+                entity.Property(p => p.FirstName).IsRequired().HasMaxLength(100);
+                entity.Property(p => p.LastName).IsRequired().HasMaxLength(100);
                 entity.Property(p => p.PreferredName).HasMaxLength(100);
+
+                // A birth date has no time or time zone; map it to PostgreSQL 'date'
+                // so values without a Kind are accepted (timestamptz requires UTC).
+                entity.Property(p => p.BirthDate).HasColumnType("date");
                 entity.Property(p => p.BloodType).HasMaxLength(5);
                 entity.Property(p => p.PrimaryCondition).HasMaxLength(200);
                 entity.Property(p => p.Allergies).HasMaxLength(1000);

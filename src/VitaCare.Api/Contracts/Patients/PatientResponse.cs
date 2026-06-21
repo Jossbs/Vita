@@ -6,6 +6,11 @@ namespace VitaCare.Api.Contracts.Patients
     {
         public Guid Id { get; set; }
 
+        public string FirstName { get; set; } = string.Empty;
+
+        public string LastName { get; set; } = string.Empty;
+
+        // Convenience display name composed from FirstName + LastName.
         public string FullName { get; set; } = string.Empty;
 
         public string? PreferredName { get; set; }

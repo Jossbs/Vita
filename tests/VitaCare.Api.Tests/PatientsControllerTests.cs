@@ -19,7 +19,8 @@ public class PatientsControllerTests
         await using var dbContext = CreateDbContext();
         var controller = CreateController(dbContext);
         var request = CreateValidRequest();
-        request.FullName = "  María López  ";
+        request.FirstName = "  María  ";
+        request.LastName = "  López  ";
         request.EmergencyContactName = "  Ana López  ";
 
         var result = await controller.Create(request);
@@ -28,6 +29,8 @@ public class PatientsControllerTests
         Assert.Equal(nameof(PatientsController.GetById), created.ActionName);
 
         var response = Assert.IsType<PatientResponse>(created.Value);
+        Assert.Equal("María", response.FirstName);
+        Assert.Equal("López", response.LastName);
         Assert.Equal("María López", response.FullName);
         Assert.Equal("Ana López", response.EmergencyContactName);
         Assert.Equal(CareLevel.Moderate, response.CareLevel);
@@ -35,7 +38,8 @@ public class PatientsControllerTests
 
         var patient = await dbContext.Patients.SingleAsync();
         Assert.Equal(response.Id, patient.Id);
-        Assert.Equal("María López", patient.FullName);
+        Assert.Equal("María", patient.FirstName);
+        Assert.Equal("López", patient.LastName);
         Assert.Equal("Ana López", patient.EmergencyContactName);
     }
 
@@ -79,7 +83,8 @@ public class PatientsControllerTests
         await using var dbContext = CreateDbContext();
         var patient = new Patient
         {
-            FullName = "Nombre original",
+            FirstName = "Nombre",
+            LastName = "Original",
             BirthDate = new DateTime(1950, 1, 1),
             CareLevel = CareLevel.Basic,
             MobilityStatus = MobilityStatus.Independent
@@ -89,19 +94,20 @@ public class PatientsControllerTests
 
         var controller = CreateController(dbContext);
         var request = CreateValidRequest();
-        request.FullName = "Nombre actualizado";
+        request.FirstName = "Nombre";
+        request.LastName = "Actualizado";
         request.CareLevel = CareLevel.High;
 
         var result = await controller.Update(patient.Id, request);
 
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var response = Assert.IsType<PatientResponse>(ok.Value);
-        Assert.Equal("Nombre actualizado", response.FullName);
+        Assert.Equal("Nombre Actualizado", response.FullName);
         Assert.Equal(CareLevel.High, response.CareLevel);
         Assert.NotNull(response.UpdatedAt);
 
         var persisted = await dbContext.Patients.SingleAsync();
-        Assert.Equal("Nombre actualizado", persisted.FullName);
+        Assert.Equal("Actualizado", persisted.LastName);
         Assert.NotNull(persisted.UpdatedAt);
     }
 
@@ -111,7 +117,8 @@ public class PatientsControllerTests
         await using var dbContext = CreateDbContext();
         var patient = new Patient
         {
-            FullName = "Paciente a eliminar",
+            FirstName = "Paciente",
+            LastName = "A Eliminar",
             BirthDate = new DateTime(1942, 5, 10),
             CareLevel = CareLevel.Basic,
             MobilityStatus = MobilityStatus.Independent
@@ -128,18 +135,18 @@ public class PatientsControllerTests
     }
 
     [Fact]
-    public void PatientRequest_WithoutFullName_ReturnsSpanishValidationMessage()
+    public void PatientRequest_WithoutFirstName_ReturnsSpanishValidationMessage()
     {
         var request = CreateValidRequest();
-        request.FullName = null;
+        request.FirstName = null;
         var context = new ValidationContext(request);
         var validationResults = new List<ValidationResult>();
 
         var isValid = Validator.TryValidateObject(request, context, validationResults, validateAllProperties: true);
 
         Assert.False(isValid);
-        var error = Assert.Single(validationResults, result => result.MemberNames.Contains(nameof(PatientRequest.FullName)));
-        Assert.Equal("El nombre completo es obligatorio.", error.ErrorMessage);
+        var error = Assert.Single(validationResults, result => result.MemberNames.Contains(nameof(PatientRequest.FirstName)));
+        Assert.Equal("El nombre es obligatorio.", error.ErrorMessage);
     }
 
     private static ApplicationDbContext CreateDbContext()
@@ -160,8 +167,9 @@ public class PatientsControllerTests
     {
         return new PatientRequest
         {
-            FullName = "María López",
-            PreferredName = "María",
+            FirstName = "María",
+            LastName = "López",
+            PreferredName = "Mari",
             BirthDate = new DateTime(1948, 3, 12),
             BloodType = "O+",
             CareLevel = CareLevel.Moderate,

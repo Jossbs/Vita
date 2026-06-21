@@ -9,8 +9,11 @@ namespace VitaCare.Core.Entities
     /// </summary>
     public class Patient : BaseEntity
     {
-        public string FullName { get; set; } = string.Empty;
+        public string FirstName { get; set; } = string.Empty;
 
+        public string LastName { get; set; } = string.Empty;
+
+        // Alias or name the patient prefers to be addressed by.
         public string? PreferredName { get; set; }
 
         public DateTime BirthDate { get; set; }
